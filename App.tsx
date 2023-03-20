@@ -1,12 +1,30 @@
-import { StatusBar } from 'expo-status-bar';
-import { ImageBackground, StyleSheet, Text, View } from "react-native";
-import Navigation from './navigation';
+import React from 'react';
+import {NavigationContainer} from '@react-navigation/native';
+import {QueryClient, QueryClientProvider} from '@tanstack/react-query';
+import {createStackNavigator} from '@react-navigation/stack';
+import HomeScreen from "./screens/HomeScreen";
 
-export default function App() {
+export type HomeStackParamList = {
+  Home: undefined;
+};
+const queryClient = new QueryClient();
+
+const HomeStack = createStackNavigator<HomeStackParamList>();
+
+function App() {
   return (
-    <>
-        <Navigation />
-        <StatusBar hidden = {false} backgroundColor = "#007FFF" translucent = {true}/>
-    </>
+      <QueryClientProvider client={queryClient}>
+        <NavigationContainer>
+          <HomeStack.Navigator>
+            <HomeStack.Screen
+                name="Home"
+                component={HomeScreen}
+                options={{headerShown: false}}
+            />
+          </HomeStack.Navigator>
+        </NavigationContainer>
+      </QueryClientProvider>
   );
 }
+
+export default App;
