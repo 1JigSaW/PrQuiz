@@ -1,13 +1,10 @@
 import {HomeStackParamList} from '../App';
 import {StackScreenProps} from '@react-navigation/stack';
 import {Text, View} from 'react-native';
-import {useQualificationsList} from '../queries/Qualifications';
 
 type Props = StackScreenProps<HomeStackParamList, 'Home'>;
 
-const HomeScreen = ({navigation}: Props) => {
-  const qualificationsList = useQualificationsList();
-
+const LevelScreen = ({navigation}: Props) => {
   return (
     <View>
       {qualificationsList.data?.map(qualification => (
@@ -18,4 +15,4 @@ const HomeScreen = ({navigation}: Props) => {
     </View>
   );
 };
-export default HomeScreen;
+export default LevelScreen;
