@@ -1,6 +1,7 @@
 import axios, {AxiosRequestConfig, AxiosResponse} from 'axios';
 
-export const apiUrl = 'https://46a1-213-7-244-92.eu.ngrok.io';
+export const apiUrl =
+  'https://0345-2a00-23c7-5981-6601-b59e-5cc9-a020-9356.eu.ngrok.io';
 
 export class API {
   private static axios = axios.create({

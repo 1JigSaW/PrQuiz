@@ -1,18 +1,26 @@
 import {HomeStackParamList} from '../App';
 import {StackScreenProps} from '@react-navigation/stack';
-import {Text, View} from 'react-native';
-import {useQualificationsList} from '../queries/Qualifications';
+import {Text, View, Pressable} from 'react-native';
+import {useGroupsList} from '../queries/Group';
 
 type Props = StackScreenProps<HomeStackParamList, 'Home'>;
 
 const HomeScreen = ({navigation}: Props) => {
-  const qualificationsList = useQualificationsList();
+  const groupList = useGroupsList();
 
   return (
     <View>
-      {qualificationsList.data?.map(qualification => (
-        <View key={qualification.id}>
-          <Text>{qualification.title}</Text>
+      {groupList.data?.map(group => (
+        <View key={group.id}>
+          <Pressable
+            onPress={() =>
+              navigation.navigate('Subgroup', {
+                group_id: group.id,
+                group_title: group.title,
+              })
+            }>
+            <Text>{group.title}</Text>
+          </Pressable>
         </View>
       ))}
     </View>
