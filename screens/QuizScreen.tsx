@@ -1,18 +1,37 @@
 import {HomeStackParamList} from '../App';
 import {StackScreenProps} from '@react-navigation/stack';
-import {Text, View, Pressable} from 'react-native';
+import {Text, View, Pressable, TextInput} from 'react-native';
 import {useEffect, useState} from 'react';
 import {useQuestionsList} from '../queries/Quiz';
 
 type Props = StackScreenProps<HomeStackParamList, 'Quiz'>;
 
+interface Answer {
+  question: string;
+  answer: any;
+}
+
 const QuizScreen = ({navigation, route}: Props) => {
-  const [countdown, setCountdown] = useState(5);
+  const [countdown, setCountdown] = useState(3);
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
-  const [showQuestion, setShowQuestion] = useState(false);
-  const {group_id, subgroup_id, level_id} = route.params;
+  const {
+    group_id,
+    subgroup_id,
+    level_id,
+    level_title,
+    group_title,
+    subgroup_title,
+  } = route.params;
+  const [selectedOption, setSelectedOption] = useState<any>('');
+  const [trueAnswer, setTrueAnswer] = useState(0);
+  const [falseAnswer, setFalseAnswer] = useState(0);
+  const [answers, setAnswers] = useState<Answer[]>([]);
   const questions = useQuestionsList(group_id, subgroup_id, level_id);
-  console.log(questions.data?.[0]?.question);
+  const [text, setText] = useState(''); // initialize state to empty string
+
+  const handleTextChange = (value: any) => {
+    setText(value); // update state with current text value
+  };
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -23,19 +42,59 @@ const QuizScreen = ({navigation, route}: Props) => {
       clearTimeout(timer);
     }
 
+    if (currentQuestionIndex === 10) {
+      navigation.navigate('EndQuiz', {
+        trueAnswer: trueAnswer,
+        falseAnswer: falseAnswer,
+        group_id: group_id,
+        subgroup_id: subgroup_id,
+        level_id: level_id,
+        level_title: level_title,
+        group_title: group_title,
+        subgroup_title: subgroup_title,
+        answers: answers,
+      });
+    }
+
     return () => {
       clearTimeout(timer);
     };
-  }, [countdown]);
+  }, [
+    answers,
+    countdown,
+    currentQuestionIndex,
+    falseAnswer,
+    group_id,
+    group_title,
+    level_id,
+    level_title,
+    navigation,
+    subgroup_id,
+    subgroup_title,
+    trueAnswer,
+  ]);
 
-  // const handleNextQuestion = () => {
-  //   if (currentQuestionIndex === questions.data?.length - 1) {
-  //     // End of test
-  //     setShowQuestion(false);
-  //   } else {
-  //     setCurrentQuestionIndex(currentQuestionIndex + 1);
-  //   }
-  // };
+  const handleOptionSelect = (option: any) => {
+    // function to handle option selection
+    setSelectedOption(option); // save user's selection to state
+    if (option === questions.data?.[currentQuestionIndex]?.correct_answer) {
+      setTrueAnswer(trueAnswer + 1);
+    } else {
+      setFalseAnswer(falseAnswer + 1);
+    }
+
+    const currentQuestion = questions.data?.[currentQuestionIndex];
+    if (currentQuestion) {
+      const answer = {
+        question: currentQuestion.question,
+        answer: option,
+      };
+      setAnswers([...answers, answer]);
+    }
+    setText('');
+    setCurrentQuestionIndex(currentQuestionIndex + 1);
+  };
+
   return (
     <View>
       {countdown !== 0 && (
@@ -47,16 +106,52 @@ const QuizScreen = ({navigation, route}: Props) => {
       {countdown === 0 &&
         questions.data?.[currentQuestionIndex]?.answer_type === 2 && (
           <View>
-            <Text>{questions.data?.[currentQuestionIndex]?.option_1}</Text>
-            <Text>{questions.data?.[currentQuestionIndex]?.option_2}</Text>
-            <Text>{questions.data?.[currentQuestionIndex]?.option_3}</Text>
-            <Text>{questions.data?.[currentQuestionIndex]?.option_4}</Text>
+            <Pressable
+              onPress={() =>
+                handleOptionSelect(
+                  questions.data?.[currentQuestionIndex]?.option_1,
+                )
+              }>
+              <Text>{questions.data?.[currentQuestionIndex]?.option_1}</Text>
+            </Pressable>
+            <Pressable
+              onPress={() =>
+                handleOptionSelect(
+                  questions.data?.[currentQuestionIndex]?.option_2,
+                )
+              }>
+              <Text>{questions.data?.[currentQuestionIndex]?.option_2}</Text>
+            </Pressable>
+            <Pressable
+              onPress={() =>
+                handleOptionSelect(
+                  questions.data?.[currentQuestionIndex]?.option_3,
+                )
+              }>
+              <Text>{questions.data?.[currentQuestionIndex]?.option_3}</Text>
+            </Pressable>
+            <Pressable
+              onPress={() =>
+                handleOptionSelect(
+                  questions.data?.[currentQuestionIndex]?.option_4,
+                )
+              }>
+              <Text>{questions.data?.[currentQuestionIndex]?.option_4}</Text>
+            </Pressable>
           </View>
         )}
       {countdown === 0 &&
         questions.data?.[currentQuestionIndex]?.answer_type === 1 && (
-          <View>
-            <Text>{questions.data?.[currentQuestionIndex]?.answer_text}</Text>
+          <View key={currentQuestionIndex}>
+            <TextInput value={text} onChangeText={handleTextChange} />
+            <Pressable
+              onPress={() =>
+                handleOptionSelect(
+                  questions.data?.[currentQuestionIndex]?.option_2,
+                )
+              }>
+              <Text>Send</Text>
+            </Pressable>
           </View>
         )}
     </View>

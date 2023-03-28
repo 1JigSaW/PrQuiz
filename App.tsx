@@ -7,6 +7,13 @@ import LevelScreen from './screens/LevelScreen';
 import StartScreen from './screens/StartScreen';
 import QuizScreen from './screens/QuizScreen';
 import SubGroupScreen from './screens/SubGroupScreen';
+import EndQuizScreen from './screens/EndQuizScreen';
+import ResultsScreen from './screens/ResultsScreen';
+
+interface Answer {
+  question: string;
+  answer: any;
+}
 
 export type HomeStackParamList = {
   Home: undefined;
@@ -32,6 +39,27 @@ export type HomeStackParamList = {
     group_id: number;
     subgroup_id: number;
     level_id: number;
+    level_title: string;
+    group_title: string;
+    subgroup_title: string;
+    answers: Answer[];
+  };
+  EndQuiz: {
+    trueAnswer?: number;
+    falseAnswer?: number;
+    group_id: number;
+    subgroup_id: number;
+    level_id: number;
+    level_title?: string;
+    group_title?: string;
+    subgroup_title?: string;
+    answers?: Answer[];
+  };
+  Results: {
+    group_id: number;
+    subgroup_id: number;
+    level_id: number;
+    answers: Answer[];
   };
 };
 const queryClient = new QueryClient();
@@ -52,6 +80,8 @@ function App() {
           <HomeStack.Screen name="Level" component={LevelScreen} />
           <HomeStack.Screen name="Start" component={StartScreen} />
           <HomeStack.Screen name="Quiz" component={QuizScreen} />
+          <HomeStack.Screen name="EndQuiz" component={EndQuizScreen} />
+          <HomeStack.Screen name="Results" component={ResultsScreen} />
         </HomeStack.Navigator>
       </NavigationContainer>
     </QueryClientProvider>

@@ -30,6 +30,9 @@ const StartScreen = ({navigation, route}: Props) => {
               group_id: group_id,
               subgroup_id: subgroup_id,
               level_id: level_id,
+              level_title: level_title,
+              group_title: group_title,
+              subgroup_title: subgroup_title,
             })
           }>
           <Text>Start</Text>
