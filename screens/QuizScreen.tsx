@@ -1,8 +1,16 @@
 import {HomeStackParamList} from '../App';
 import {StackScreenProps} from '@react-navigation/stack';
-import {Text, View, Pressable, TextInput} from 'react-native';
-import {useEffect, useState} from 'react';
+import {
+  Text,
+  View,
+  Pressable,
+  TextInput,
+  Alert,
+  BackHandler,
+} from 'react-native';
+import React, {useEffect, useState} from 'react';
 import {useQuestionsList} from '../queries/Quiz';
+import {useFocusEffect} from '@react-navigation/native';
 
 type Props = StackScreenProps<HomeStackParamList, 'Quiz'>;
 
@@ -27,7 +35,39 @@ const QuizScreen = ({navigation, route}: Props) => {
   const [falseAnswer, setFalseAnswer] = useState(0);
   const [answers, setAnswers] = useState<Answer[]>([]);
   const questions = useQuestionsList(group_id, subgroup_id, level_id);
-  const [text, setText] = useState(''); // initialize state to empty string
+  const [text, setText] = useState('');
+
+  useFocusEffect(
+    React.useCallback(() => {
+      const onBeforeRemove = (e: any) => {
+        // Prevent default behavior of leaving the screen
+        e.preventDefault();
+
+        // Show confirmation dialog
+        Alert.alert(
+          'Confirm exit',
+          'Are you sure you want to exit?',
+          [
+            {text: 'Cancel', style: 'cancel', onPress: () => {}},
+            {
+              text: 'Exit',
+              style: 'destructive',
+              onPress: () => navigation.dispatch(e.data.action),
+            },
+          ],
+          {cancelable: true},
+        );
+      };
+
+      // Add listener for the beforeRemove event
+      navigation.addListener('beforeRemove', onBeforeRemove);
+
+      // Remove listener when the screen is unfocused or unmounted
+      return () => {
+        navigation.removeListener('beforeRemove', onBeforeRemove);
+      };
+    }, [navigation]),
+  );
 
   const handleTextChange = (value: any) => {
     setText(value); // update state with current text value

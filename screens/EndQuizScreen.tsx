@@ -19,11 +19,11 @@ const EndQuizScreen = ({navigation, route}: Props) => {
     answers,
   } = route.params;
 
-  // React.useLayoutEffect(() => {
-  //   navigation.setOptions({
-  //     title: `${group_title}: ${subgroup_title}`,
-  //   });
-  // }, [navigation, group_title, subgroup_title]);
+  React.useLayoutEffect(() => {
+    navigation.setOptions({
+      headerLeft: () => null, // empty component
+    });
+  }, [navigation]);
 
   return (
     <View>
@@ -32,10 +32,12 @@ const EndQuizScreen = ({navigation, route}: Props) => {
       <Pressable
         onPress={() => {
           navigation.navigate('Results', {
-            group_id,
-            subgroup_id,
-            level_id,
+            group_id: group_id,
+            subgroup_id: subgroup_id,
+            level_id: level_id,
             answers: answers,
+            trueAnswer: trueAnswer,
+            falseAnswer: falseAnswer,
           });
         }}>
         <Text>Show Results</Text>

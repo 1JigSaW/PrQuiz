@@ -7,7 +7,7 @@ import {Pressable, Text, View} from 'react-native';
 type Props = StackScreenProps<HomeStackParamList, 'Results'>;
 
 const ResultsScreen = ({navigation, route}: Props) => {
-  const {group_id, subgroup_id, level_id, answers} = route.params;
+  const {group_id, subgroup_id, level_id, answers, trueAnswer, falseAnswer} = route.params;
   const questions = useQuestionsList(group_id, subgroup_id, level_id);
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
 
@@ -23,6 +23,9 @@ const ResultsScreen = ({navigation, route}: Props) => {
       group_id: group_id,
       subgroup_id: subgroup_id,
       level_id: level_id,
+      trueAnswer: trueAnswer,
+      falseAnswer: falseAnswer,
+      answers: answers,
     });
   };
 

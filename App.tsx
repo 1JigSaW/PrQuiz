@@ -25,11 +25,11 @@ export type HomeStackParamList = {
   };
   Start: {
     group_id: number;
-    group_title: string;
+    group_title: string | undefined;
     subgroup_id: number;
-    subgroup_title: string;
+    subgroup_title: string | undefined;
     level_id: number;
-    level_title: string;
+    level_title: string | undefined;
   };
   Subgroup: {
     group_id: number;
@@ -53,13 +53,15 @@ export type HomeStackParamList = {
     level_title?: string;
     group_title?: string;
     subgroup_title?: string;
-    answers?: Answer[];
+    answers: Answer[];
   };
   Results: {
     group_id: number;
     subgroup_id: number;
     level_id: number;
     answers: Answer[];
+    trueAnswer?: number;
+    falseAnswer?: number;
   };
 };
 const queryClient = new QueryClient();
