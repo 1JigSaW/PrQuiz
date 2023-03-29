@@ -6,7 +6,6 @@ import {
   Pressable,
   TextInput,
   Alert,
-  BackHandler,
 } from 'react-native';
 import React, {useEffect, useState} from 'react';
 import {useQuestionsList} from '../queries/Quiz';
